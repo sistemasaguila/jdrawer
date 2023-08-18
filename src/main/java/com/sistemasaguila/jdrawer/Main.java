@@ -1,6 +1,7 @@
 package com.sistemasaguila.jdrawer;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -34,37 +35,41 @@ public class Main extends JFrame
     }
 
     private DrawerController drawer;
-    private void test(){
-        drawer = Drawer.newDrawer(this)
-                //.header(new encabezado())
-                //.separator(2, new Color(90,90,90))
-                .space(50) // espacio entre el encabezado y el cuerpo
-                // 	.background(new Color(255,51,51)) cambia el color del fondo
-                // 	.backgroundTransparent(0.3f) cambia el color del efecto en la transparencia
+
+    private void test() {
+        Drawer d = Drawer.newDrawer(this)
                 .leftDrawer(false) // cuando está en false se alinea a la derecha
                 .drawerWidth(500) // ajusta el tamaño del panel
                 .itemAlignLeft(true) // si es true alinea a la derecha
-                .itemHeight(40) // tamaño de separacion de items
+                .headerHeight(50)
+                .itemHeight(35) // tamaño de separacion de items
                 .closeOnPress(true) // se cierra el panel si se da click fuera del mismo
-                //	.drawerBackground(new Color(238,238,143)) color del panel
-                //	.duration(300)  duracion de apertura del panel
                 .enableScroll(true) // activa el scroll
-                //	.enableScrollUI(false)
-                .addChild(new DrawerItem("ITEM NAME").build())
-                .addChild(new DrawerItem("ITEM NAME").build())
-                .addChild(new DrawerItem("ITEM NAME").build())
-                .addChild(new DrawerItem("ITEM NAME").build())
-                .addFooter(new DrawerItem("ITEM FOOTER").build())
+                .enableScrollUI(true)
+                .addChild(new PanelTest())
+                .addChild(new PanelTest())
+                .addChild(new PanelTest())
+                .addChild(new PanelTest())
+                .addChild(new PanelTest())
+                .addChild(new PanelTest())
+                //.addChild(new PanelTest())
+                //.addChild(new DrawerItem("Item 2").build())
+                //.addChild(new PanelTest())
+                //.addChild(new PanelTest())
+                //.addChild(new PanelTest())
+                //.addChild(new PanelTest())
+                //.addChild(new DrawerItem("Item 3").build())
+                //.addFooter(new DrawerItem("ITEM FOOTER").build())
                 .event(new EventDrawer() {
                     @Override
                     public void selected(int index, DrawerItem item) {
-                        System.err.println("okoite la prueba che karai");
-
+                        System.err.println(index + " -> " + item);
                     }
-                })
-                .build();
-    }
+                });
+            drawer = d.build();
 
+
+    }
     private JPanel getPanel(){
         if(panel == null){
             panel = new JPanel();
@@ -75,6 +80,35 @@ public class Main extends JFrame
     }
     public static void main(String[] args) {
         new Main().setVisible(true);
+    }
+
+
+    public class PanelTest extends  JPanel {
+
+        public PanelTest(){
+            setPreferredSize(new Dimension(400,50));
+            setBackground(Color.lightGray);
+            add(btn2());
+        }
+
+        private JButton btn2;
+
+        private JButton btn2(){
+            if(btn2 == null){
+                btn2 = new JButton();
+                btn2.setText("close");
+                btn2.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                       setVisible(false);
+                       revalidate();
+                    }
+                });
+            }
+            return btn2;
+        }
+
+
     }
 
 }

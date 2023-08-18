@@ -1,12 +1,6 @@
 package com.sistemasaguila.jdrawer;
 
-import java.awt.AlphaComposite;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Rectangle;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -15,13 +9,7 @@ import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollBar;
-import javax.swing.JScrollPane;
+import javax.swing.*;
 
 import com.sistemasaguila.jdrawer.scroll.ScrollBar;
 import net.miginfocom.swing.MigLayout;
@@ -41,7 +29,7 @@ public class Drawer implements DrawerController {
     private final List<EventDrawer> events;
     private final List<Component> childrens;
     private final List<Component> footers;
-    private Component header;
+    private Component header ;
     private int drawerWidth = 250;
     private int headerHeight = 150;
     private Color background = new Color(30, 30, 30);
@@ -57,6 +45,9 @@ public class Drawer implements DrawerController {
     private boolean enableScrollUI = true;
     private int index = 0;
     private boolean itemAlignLeft = true;
+    private Insets itemMargin = new Insets(5,5,5,5);
+    private int itemSpace = 2; //gap 2
+    private JLabel emptyLabel;
 
     private Drawer(JFrame fram) {
         this.fram = fram;
@@ -217,6 +208,16 @@ public class Drawer implements DrawerController {
         return this;
     }
 
+    public Drawer itemMargin(Insets itemMargin) {
+        this.itemMargin = itemMargin;
+        return this;
+    }
+
+    public Drawer itemSpace(int itemSpace) {
+        this.itemSpace = itemSpace;
+        return this;
+    }
+
     public Drawer event(EventDrawer event) {
         this.events.add(event);
         return this;
@@ -266,6 +267,34 @@ public class Drawer implements DrawerController {
             event.selected(index, item);
         }
     }
+    private JLabel getEmptyLabel(){
+        if(emptyLabel == null){
+            emptyLabel = new JLabel();
+            emptyLabel.setName("dummy");
+            emptyLabel.setHorizontalAlignment(SwingConstants.CENTER);
+            emptyLabel.setForeground(UIManager.getColor("CheckBoxMenuItem.foreground"));
+        }
+        return  emptyLabel;
+    }
+
+    public Drawer emptyLabel(String text, Font font, Icon icon){
+        emptyLabel.setText(text);
+        emptyLabel.setFont(font);
+        emptyLabel.setIcon(icon);
+        return this;
+    }
+
+    public Drawer emptyLabel(String text) {
+        return emptyLabel(text, new Font(Font.DIALOG, Font.PLAIN, 12), null);
+    }
+
+    public Drawer emptyLabel(String text, Font font) {
+        return emptyLabel(text, font, null);
+    }
+
+    public Drawer emptyLabel(Icon icon) {
+        return emptyLabel(null, null, icon);
+    }
 
     public DrawerController build() {
         panelDrawer = new DrawerPanel(drawerWidth, backgroundTransparent, leftDrawer);
@@ -274,23 +303,29 @@ public class Drawer implements DrawerController {
         if (header != null) {
             panelDrawer.addItem(header, "h " + headerHeight);
         }
+
         if (enableScroll) {
-            JPanel panelItem = new JPanel(new MigLayout("wrap, inset 0, gap 0, fill", "fill"));
+            String inset = String.format("inset %s %s %s %s", itemMargin.top, itemMargin.left, itemMargin.bottom, itemMargin.right);
+
+            JPanel panelItem = new JPanel(new MigLayout("wrap, "+inset+", gap "+itemSpace+", fill, hidemode 3", "fill"));
             panelItem.setOpaque(false);
             for (Component com : childrens) {
                 if (com.toString().equals("drawer")) {
                     checkAlign(com);
-                    panelItem.add(com, "height " + itemHeight);
+                    panelItem.add(com, "hidemode 1, wrap, height " + itemHeight);
                 } else {
                     panelItem.add(com);
                 }
             }
+
+            panelItem.add(getEmptyLabel(), "push");
+
             if (!footers.isEmpty()) {
-                panelItem.add(new JLabel(), "push");
+
                 for (Component com : footers) {
                     if (com.toString().equals("drawer")) {
                         checkAlign(com);
-                        panelItem.add(com, "height " + itemHeight);
+                        panelItem.add(com, "hidemode 1, wrap, height " + itemHeight);
                     } else {
                         panelItem.add(com);
                     }
@@ -436,4 +471,5 @@ public class Drawer implements DrawerController {
             super.paintComponent(g);
         }
     }
+
 }
