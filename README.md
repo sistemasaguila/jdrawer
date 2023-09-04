@@ -26,6 +26,6 @@ Custom fonts for jasper reports
 <dependency>
     <groupId>com.github.sistemasaguila</groupId>
     <artifactId>jdrawer</artifactId>
-    <version>jdrawer-1.1</version>
+    <version>1.1</version>
 </dependency>
 ```
