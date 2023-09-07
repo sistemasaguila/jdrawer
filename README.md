@@ -3,8 +3,7 @@
 [![](https://jitpack.io/v/sistemasaguila/jdrawer.svg)](https://jitpack.io/#sistemasaguila/jdrawer)
 
 
-
-Custom fonts for jasper reports
+Java library that offers a custom panel component with animation designed to contain notifications and other components in your applications.
 
 
 ## Install (Maven)
